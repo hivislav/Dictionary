@@ -8,7 +8,6 @@ import com.hivislav.dictionary.data.datasource.network.*
 import com.hivislav.dictionary.domain.MainInteractor
 import com.hivislav.dictionary.domain.Repository
 import com.hivislav.dictionary.presentation.main.MainViewModel
-import io.reactivex.disposables.CompositeDisposable
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -29,5 +28,5 @@ val application = module {
 
 val mainScreen = module {
     factory { MainInteractor(get()) }
-    factory { MainViewModel(get(), CompositeDisposable()) }
+    factory { MainViewModel(get()) }
 }

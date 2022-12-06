@@ -1,6 +1,6 @@
 package com.hivislav.dictionary.data.datasource.network
 
-import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -14,7 +14,7 @@ class ApiFactory (
     private val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL_LOCATIONS)
         .addConverterFactory(GsonConverterFactory.create())
-        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+        .addCallAdapterFactory(CoroutineCallAdapterFactory())
         .client(createOkHttpClient(interceptor))
         .build()
 

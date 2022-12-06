@@ -1,12 +1,11 @@
 package com.hivislav.dictionary.data.datasource.network
 
 import com.hivislav.dictionary.data.datasource.DataSource
-import io.reactivex.Observable
 
 class DataSourceRemote (
     private val remoteProvider: RetrofitImplementation
 ) : DataSource<List<DataModelDto>> {
 
-    override fun getData(word: String): Observable<List<DataModelDto>> =
+    override suspend fun getData(word: String): List<DataModelDto> =
         remoteProvider.getData(word)
 }

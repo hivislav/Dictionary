@@ -1,20 +1,16 @@
 package com.hivislav.dictionary.presentation.main
 
 import android.os.Bundle
-import android.provider.Settings.Global.getString
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hivislav.dictionary.R
 import com.hivislav.dictionary.data.datasource.network.DataModelDto
 import com.hivislav.dictionary.databinding.ActivityMainBinding
 import com.hivislav.dictionary.presentation.AppState
 import com.hivislav.dictionary.presentation.main.adapter.MainAdapter
-import org.koin.android.compat.ScopeCompat.viewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
