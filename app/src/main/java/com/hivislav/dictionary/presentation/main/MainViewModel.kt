@@ -9,10 +9,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
-import javax.inject.Inject
 
 
-class MainViewModel @Inject constructor(
+class MainViewModel (
     private val interactor: MainInteractor,
     private val compositeDisposable: CompositeDisposable,
 

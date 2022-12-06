@@ -3,9 +3,8 @@ package com.hivislav.dictionary.data.datasource.network
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
-import javax.inject.Inject
 
-class BaseInterceptor @Inject constructor() : Interceptor {
+class BaseInterceptor: Interceptor {
 
     private var responseCode: Int = 0
 

@@ -1,30 +1,26 @@
 package com.hivislav.dictionary.presentation.main
 
 import android.os.Bundle
+import android.provider.Settings.Global.getString
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hivislav.dictionary.R
 import com.hivislav.dictionary.data.datasource.network.DataModelDto
 import com.hivislav.dictionary.databinding.ActivityMainBinding
 import com.hivislav.dictionary.presentation.AppState
-import com.hivislav.dictionary.presentation.DictionaryApplication
 import com.hivislav.dictionary.presentation.main.adapter.MainAdapter
-import javax.inject.Inject
+import org.koin.android.compat.ScopeCompat.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
+
 
 class MainActivity : AppCompatActivity() {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
-    private lateinit var viewModel: MainViewModel
-
-    private val component by lazy {
-        (application as DictionaryApplication).component
-    }
+    private lateinit var model: MainViewModel
 
     private lateinit var binding: ActivityMainBinding
     private var adapter: MainAdapter? = null
@@ -39,14 +35,10 @@ class MainActivity : AppCompatActivity() {
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        component.inject(this)
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
 
-        viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
-        viewModel.loadedWords.observe(this) {
-            renderData(it)
-        }
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        initViewModel()
 
         setContentView(binding.root)
         binding.searchFab.setOnClickListener {
@@ -54,7 +46,7 @@ class MainActivity : AppCompatActivity() {
             searchDialogFragment.setOnSearchClickListener(object :
                 SearchDialogFragment.OnSearchClickListener {
                 override fun onClick(searchWord: String) {
-                    viewModel.getData(searchWord, true)
+                    model.getData(searchWord, true)
                 }
             })
             searchDialogFragment.show(
@@ -64,7 +56,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun renderData(appState: AppState) {
+    private fun initViewModel() {
+        if (binding.mainActivityRecyclerview.adapter != null) {
+            throw IllegalAccessException("The ViewModel should be initialised first")
+        }
+
+        val viewModel: MainViewModel by viewModel()
+        model = viewModel
+        model.loadedWords.observe(this@MainActivity) {
+            renderData(it)
+        }
+    }
+
+    private fun renderData(appState: AppState) {
         when (appState) {
             is AppState.Success -> {
                 val dataModel = appState.data
@@ -103,7 +107,7 @@ class MainActivity : AppCompatActivity() {
         showViewError()
         binding.errorTextview.text = error ?: getString(R.string.undefined_error)
         binding.reloadButton.setOnClickListener {
-            viewModel.getData("hi", true)
+            model.getData("hi", true)
         }
     }
 

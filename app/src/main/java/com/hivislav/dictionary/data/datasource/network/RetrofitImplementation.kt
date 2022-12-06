@@ -2,9 +2,8 @@ package com.hivislav.dictionary.data.datasource.network
 
 import com.hivislav.dictionary.data.datasource.DataSource
 import io.reactivex.Observable
-import javax.inject.Inject
 
-class RetrofitImplementation @Inject constructor(
+class RetrofitImplementation (
     private val apiService: ApiService
 ) : DataSource<List<DataModelDto>> {
 
