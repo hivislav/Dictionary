@@ -4,16 +4,19 @@ import android.os.Bundle
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hivislav.dictionary.R
 import com.hivislav.dictionary.data.datasource.network.DataModelDto
 import com.hivislav.dictionary.databinding.ActivityMainBinding
 import com.hivislav.dictionary.presentation.AppState
-import com.hivislav.dictionary.presentation.base.BaseActivity
-import com.hivislav.dictionary.presentation.base.View
 import com.hivislav.dictionary.presentation.main.adapter.MainAdapter
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MainActivity : BaseActivity<AppState>() {
+
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var model: MainViewModel
 
     private lateinit var binding: ActivityMainBinding
     private var adapter: MainAdapter? = null
@@ -27,20 +30,19 @@ class MainActivity : BaseActivity<AppState>() {
             }
         }
 
-    override fun createPresenter(): MainPresenter<AppState, View> {
-        return MainPresenterImpl()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
+        initViewModel()
+
         setContentView(binding.root)
         binding.searchFab.setOnClickListener {
             val searchDialogFragment = SearchDialogFragment.newInstance()
             searchDialogFragment.setOnSearchClickListener(object :
                 SearchDialogFragment.OnSearchClickListener {
                 override fun onClick(searchWord: String) {
-                    mainPresenter.getData(searchWord, true)
+                    model.getData(searchWord, true)
                 }
             })
             searchDialogFragment.show(
@@ -50,7 +52,19 @@ class MainActivity : BaseActivity<AppState>() {
         }
     }
 
-    override fun renderData(appState: AppState) {
+    private fun initViewModel() {
+        if (binding.mainActivityRecyclerview.adapter != null) {
+            throw IllegalAccessException("The ViewModel should be initialised first")
+        }
+
+        val viewModel: MainViewModel by viewModel()
+        model = viewModel
+        model.loadedWords.observe(this@MainActivity) {
+            renderData(it)
+        }
+    }
+
+    private fun renderData(appState: AppState) {
         when (appState) {
             is AppState.Success -> {
                 val dataModel = appState.data
@@ -89,7 +103,7 @@ class MainActivity : BaseActivity<AppState>() {
         showViewError()
         binding.errorTextview.text = error ?: getString(R.string.undefined_error)
         binding.reloadButton.setOnClickListener {
-            mainPresenter.getData("hi", true)
+            model.getData("hi", true)
         }
     }
 
